@@ -1,0 +1,112 @@
+/* General Styles */
+
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom right, #6a11cb, #2575fc);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .container {
+    text-align: center;
+    display: none;
+  }
+  
+  #landing-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  /* Landing Page Styles */
+  h1 {
+    font-size: 2rem;
+    margin-bottom: 15px;
+    
+  }
+
+  .video-container {
+    margin: 20px auto;
+    max-width: 600px;
+   /* border: 1px solid white;*/
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  video {
+    width: 100%;
+  }
+  
+  button {
+    margin-top: 20px;
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    color: #fff;
+    background: #ff7b54;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  button:hover {
+    background: #e86434;
+  }
+  
+  /* Game Page Styles */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 100px);
+    grid-gap: 5px;
+    margin: 20px auto;
+  }
+  
+  .cell {
+    width: 100px;
+    height: 100px;
+    background: #1b1b1b;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  .cell:hover {
+    background-color: rgba(70, 70, 70, 0.1); /* Light blue highlight */
+    box-shadow: 0 0 10px rgba(34, 34, 34, 0.5); /* Soft glow effect */
+  }
+
+  .cell.taken {
+    cursor: not-allowed;
+  }
+  
+  .popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .popup-content {
+    background: #262626;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+  }
+  
+  .popup-content h2 {
+    margin-bottom: 20px;
+  }
