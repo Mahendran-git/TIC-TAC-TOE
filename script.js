@@ -66,13 +66,65 @@ function handleCellClick(e) {
   }
 }
 
-function computerMove() {
-  const emptyCells = board.map((value, index) => value === '' ? index : null).filter(value => value !== null);
-  const randomIndex = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+// Minimax Algorithm to improve AI
+function minimax(board, depth, isMaximizingPlayer) {
+  const scores = {
+    X: -10,
+    O: 10,
+    draw: 0
+  };
 
-  board[randomIndex] = 'O';
-  cells[randomIndex].textContent = 'O';
-  cells[randomIndex].classList.add('taken');
+  // Check if the game has ended
+  if (checkWinner() === 'X') return scores.X;
+  if (checkWinner() === 'O') return scores.O;
+  if (!board.includes('')) return scores.draw;
+
+  let bestScore = isMaximizingPlayer ? -Infinity : Infinity;
+
+  for (let i = 0; i < board.length; i++) {
+    if (board[i] === '') {
+      board[i] = isMaximizingPlayer ? 'O' : 'X'; // Try the move
+      let score = minimax(board, depth + 1, !isMaximizingPlayer);
+      board[i] = ''; // Undo the move
+
+      if (isMaximizingPlayer) {
+        bestScore = Math.max(score, bestScore);
+      } else {
+        bestScore = Math.min(score, bestScore);
+      }
+    }
+  }
+
+  return bestScore;
+}
+
+// Function to get the best move for the AI using Minimax
+function bestMove() {
+  let bestScore = -Infinity;
+  let move;
+
+  for (let i = 0; i < board.length; i++) {
+    if (board[i] === '') {
+      board[i] = 'O'; // Try the move
+      let score = minimax(board, 0, false); // Get the score for AI
+      board[i] = ''; // Undo the move
+
+      if (score > bestScore) {
+        bestScore = score;
+        move = i;
+      }
+    }
+  }
+
+  return move;
+}
+
+function computerMove() {
+  const move = bestMove(); // Get the best move from Minimax
+
+  board[move] = 'O';
+  cells[move].textContent = 'O';
+  cells[move].classList.add('taken');
 
   if (checkWinner()) {
     gameActive = false;
