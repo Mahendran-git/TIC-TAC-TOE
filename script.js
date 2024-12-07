@@ -39,18 +39,14 @@ function handleCellClick(e) {
   // Check for a winner
   if (checkWinner()) {
     gameActive = false;
-
-    if (currentPlayer === 'X') {
-      showWinner('player'); // Player wins
-    } else {
-      showWinner('AI'); // AI wins
-    }
+    showWinner(currentPlayer === 'X' ? 'player' : 'AI');
     return;
   }
 
   // Check for a draw
   if (!board.includes('')) {
-    showWinner('draw'); // Game is a draw
+    gameActive = false; // Ensure game stops after draw
+    showWinner('draw');
     return;
   }
 
@@ -66,61 +62,56 @@ function handleCellClick(e) {
   }
 }
 
-// Minimax Algorithm to improve AI
-function minimax(board, depth, isMaximizingPlayer) {
-  const scores = {
-    X: -10,
-    O: 10,
-    draw: 0
-  };
+// AI Move Logic to make it unpredictable
+function aiMove() {
+  let move;
+  
+  // Try winning moves first (in a random order)
+  for (let i = 0; i < winConditions.length; i++) {
+    const [a, b, c] = winConditions[i];
+    if (board[a] === board[b] && board[a] === 'O' && board[c] === '') {
+      move = c;
+      break;
+    } else if (board[a] === board[c] && board[a] === 'O' && board[b] === '') {
+      move = b;
+      break;
+    } else if (board[b] === board[c] && board[b] === 'O' && board[a] === '') {
+      move = a;
+      break;
+    }
+  }
 
-  // Check if the game has ended
-  if (checkWinner() === 'X') return scores.X;
-  if (checkWinner() === 'O') return scores.O;
-  if (!board.includes('')) return scores.draw;
-
-  let bestScore = isMaximizingPlayer ? -Infinity : Infinity;
-
-  for (let i = 0; i < board.length; i++) {
-    if (board[i] === '') {
-      board[i] = isMaximizingPlayer ? 'O' : 'X'; // Try the move
-      let score = minimax(board, depth + 1, !isMaximizingPlayer);
-      board[i] = ''; // Undo the move
-
-      if (isMaximizingPlayer) {
-        bestScore = Math.max(score, bestScore);
-      } else {
-        bestScore = Math.min(score, bestScore);
+  // Block opponent winning move
+  if (!move) {
+    for (let i = 0; i < winConditions.length; i++) {
+      const [a, b, c] = winConditions[i];
+      if (board[a] === board[b] && board[a] === 'X' && board[c] === '') {
+        move = c;
+        break;
+      } else if (board[a] === board[c] && board[a] === 'X' && board[b] === '') {
+        move = b;
+        break;
+      } else if (board[b] === board[c] && board[b] === 'X' && board[a] === '') {
+        move = a;
+        break;
       }
     }
   }
 
-  return bestScore;
-}
-
-// Function to get the best move for the AI using Minimax
-function bestMove() {
-  let bestScore = -Infinity;
-  let move;
-
-  for (let i = 0; i < board.length; i++) {
-    if (board[i] === '') {
-      board[i] = 'O'; // Try the move
-      let score = minimax(board, 0, false); // Get the score for AI
-      board[i] = ''; // Undo the move
-
-      if (score > bestScore) {
-        bestScore = score;
-        move = i;
-      }
+  // Randomly pick one of the available spaces if no immediate winning/blocking moves
+  if (!move) {
+    const availableMoves = [];
+    for (let i = 0; i < board.length; i++) {
+      if (board[i] === '') availableMoves.push(i);
     }
+    move = availableMoves[Math.floor(Math.random() * availableMoves.length)];
   }
 
   return move;
 }
 
 function computerMove() {
-  const move = bestMove(); // Get the best move from Minimax
+  const move = aiMove(); // Get a move that AI decides randomly or strategically
 
   board[move] = 'O';
   cells[move].textContent = 'O';
